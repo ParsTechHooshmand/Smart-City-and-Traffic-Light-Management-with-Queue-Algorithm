@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart City Command Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="command-center">
+        <div class="header-terminal">
+            <div class="terminal-bar">
+                <div class="terminal-controls">
+                    <span class="control-dot red"></span>
+                    <span class="control-dot yellow"></span>
+                    <span class="control-dot green"></span>
+                </div>
+                <div class="terminal-title">SMART CITY TRAFFIC CONTROL v2.1.8</div>
+                <div class="system-status">
+                    <span class="status-indicator" id="systemIndicator"></span>
+                    <span id="systemTime"></span>
+                </div>
+            </div>
+            <div class="command-line">
+                <span class="prompt">root@traffic-control:~$</span>
+                <span class="cursor-blink" id="commandText">Initializing neural networks...</span>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <div class="left-panel">
+                <div class="control-module">
+                    <div class="module-header">
+                        <h3>TRAFFIC COMMAND</h3>
+                        <div class="module-status active"></div>
+                    </div>
+                    <div class="control-buttons">
+                        <button class="cmd-btn primary" id="startBtn">
+                            <span class="btn-code">[F1]</span>
+                            <span class="btn-text">START SYSTEM</span>
+                        </button>
+                        <button class="cmd-btn secondary" id="pauseBtn">
+                            <span class="btn-code">[F2]</span>
+                            <span class="btn-text">PAUSE</span>
+                        </button>
+                        <button class="cmd-btn danger" id="resetBtn">
+                            <span class="btn-code">[F3]</span>
+                            <span class="btn-text">SYSTEM RESET</span>
+                        </button>
+                        <button class="cmd-btn emergency" id="emergencyBtn">
+                            <span class="btn-code">[F4]</span>
+                            <span class="btn-text">EMERGENCY</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="stats-module">
+                    <div class="module-header">
+                        <h3>SYSTEM METRICS</h3>
+                        <div class="refresh-indicator" id="refreshIndicator"></div>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-label">VEHICLES</div>
+                            <div class="stat-value" id="totalVehicles">0</div>
+                            <div class="stat-bar">
+                                <div class="bar-fill" id="vehicleBar"></div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">AVG WAIT</div>
+                            <div class="stat-value" id="avgWait">0.0s</div>
+                            <div class="stat-bar">
+                                <div class="bar-fill orange" id="waitBar"></div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">EFFICIENCY</div>
+                            <div class="stat-value" id="efficiency">100%</div>
+                            <div class="stat-bar">
+                                <div class="bar-fill green" id="efficiencyBar"></div>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">THROUGHPUT</div>
+                            <div class="stat-value" id="throughput">0/min</div>
+                            <div class="stat-bar">
+                                <div class="bar-fill blue" id="throughputBar"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ai-module">
+                    <div class="module-header">
+                        <h3>AI PREDICTOR</h3>
+                        <div class="ai-status" id="aiStatus">ANALYZING</div>
+                    </div>
+                    <div class="prediction-display">
+                        <div class="prediction-item">
+                            <span class="pred-label">NEXT CONGESTION:</span>
+                            <span class="pred-value" id="nextCongestion">NORTH - 2min</span>
+                        </div>
+                        <div class="prediction-item">
+                            <span class="pred-label">WEATHER IMPACT:</span>
+                            <span class="pred-value" id="weatherImpact">CLEAR - 0%</span>
+                        </div>
+                        <div class="prediction-item">
+                            <span class="pred-label">RUSH HOUR:</span>
+                            <span class="pred-value" id="rushHour">INACTIVE</span>
+                        </div>
+                    </div>
+                    <div class="weather-controls">
+                        <button class="weather-btn active" data-weather="clear">CLEAR</button>
+                        <button class="weather-btn" data-weather="rain">RAIN</button>
+                        <button class="weather-btn" data-weather="fog">FOG</button>
+                        <button class="weather-btn" data-weather="storm">STORM</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="center-display">
+                <div class="intersection-monitor">
+                    <div class="monitor-header">
+                        <h2>TRAFFIC INTERSECTION GRID</h2>
+                        <div class="grid-coordinates">
+                            <span>SECTOR: A-4</span>
+                            <span>ACTIVE LANE: <span id="activeLane">NORTH</span></span>
+                        </div>
+                    </div>
+                    <div class="intersection-grid">
+                        <div class="lane north-lane" data-direction="north">
+                            <div class="lane-header">
+                                <div class="traffic-light" id="northLight">
+                                    <div class="light red active"></div>
+                                    <div class="light yellow"></div>
+                                    <div class="light green"></div>
+                                </div>
+                                <div class="lane-info">
+                                    <span class="lane-name">NORTH</span>
+                                    <span class="queue-count" id="northCount">0</span>
+                                </div>
+                            </div>
+                            <div class="vehicle-queue" id="northQueue"></div>
+                        </div>
+
+                        <div class="lane east-lane" data-direction="east">
+                            <div class="lane-header">
+                                <div class="traffic-light" id="eastLight">
+                                    <div class="light red active"></div>
+                                    <div class="light yellow"></div>
+                                    <div class="light green"></div>
+                                </div>
+                                <div class="lane-info">
+                                    <span class="lane-name">EAST</span>
+                                    <span class="queue-count" id="eastCount">0</span>
+                                </div>
+                            </div>
+                            <div class="vehicle-queue" id="eastQueue"></div>
+                        </div>
+
+                        <div class="intersection-core">
+                            <div class="core-display">
+                                <div class="processing-indicator" id="processingIndicator"></div>
+                                <div class="core-status" id="coreStatus">STANDBY</div>
+                                <div class="algorithm-step" id="algorithmStep">WAITING</div>
+                            </div>
+                            <div class="emergency-overlay" id="emergencyOverlay">
+                                <div class="emergency-text">EMERGENCY PROTOCOL ACTIVE</div>
+                            </div>
+                        </div>
+
+                        <div class="lane south-lane" data-direction="south">
+                            <div class="lane-header">
+                                <div class="traffic-light" id="southLight">
+                                    <div class="light red active"></div>
+                                    <div class="light yellow"></div>
+                                    <div class="light green"></div>
+                                </div>
+                                <div class="lane-info">
+                                    <span class="lane-name">SOUTH</span>
+                                    <span class="queue-count" id="southCount">0</span>
+                                </div>
+                            </div>
+                            <div class="vehicle-queue" id="southQueue"></div>
+                        </div>
+
+                        <div class="lane west-lane" data-direction="west">
+                            <div class="lane-header">
+                                <div class="traffic-light" id="westLight">
+                                    <div class="light red active"></div>
+                                    <div class="light yellow"></div>
+                                    <div class="light green"></div>
+                                </div>
+                                <div class="lane-info">
+                                    <span class="lane-name">WEST</span>
+                                    <span class="queue-count" id="westCount">0</span>
+                                </div>
+                            </div>
+                            <div class="vehicle-queue" id="westQueue"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="algorithm-display">
+                    <div class="algo-header">
+                        <h3>ALGORITHM EXECUTION</h3>
+                        <div class="execution-time" id="executionTime">0.00ms</div>
+                    </div>
+                    <div class="algorithm-steps">
+                        <div class="algo-step" id="step1">
+                            <div class="step-number">01</div>
+                            <div class="step-content">
+                                <div class="step-title">QUEUE ANALYSIS</div>
+                                <div class="step-progress">
+                                    <div class="progress-fill" id="progress1"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="algo-step" id="step2">
+                            <div class="step-number">02</div>
+                            <div class="step-content">
+                                <div class="step-title">PRIORITY CALCULATION</div>
+                                <div class="step-progress">
+                                    <div class="progress-fill" id="progress2"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="algo-step" id="step3">
+                            <div class="step-number">03</div>
+                            <div class="step-content">
+                                <div class="step-title">SIGNAL OPTIMIZATION</div>
+                                <div class="step-progress">
+                                    <div class="progress-fill" id="progress3"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="algo-step" id="step4">
+                            <div class="step-number">04</div>
+                            <div class="step-content">
+                                <div class="step-title">VEHICLE PROCESSING</div>
+                                <div class="step-progress">
+                                    <div class="progress-fill" id="progress4"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-panel">
+                <div class="log-terminal">
+                    <div class="terminal-header">
+                        <h3>SYSTEM LOG</h3>
+                        <div class="log-controls">
+                            <button class="log-filter active" data-filter="all">ALL</button>
+                            <button class="log-filter" data-filter="system">SYS</button>
+                            <button class="log-filter" data-filter="traffic">TRF</button>
+                            <button class="log-filter" data-filter="emergency">EMG</button>
+                        </div>
+                    </div>
+                    <div class="log-container" id="logContainer">
+                        <div class="log-entry system">
+                            <span class="log-time">00:00:00</span>
+                            <span class="log-type">[SYS]</span>
+                            <span class="log-message">Neural network initialized successfully</span>
+                        </div>
+                    </div>
+                    <div class="command-input">
+                        <span class="input-prompt">$</span>
+                        <input type="text" id="commandInput" placeholder="Enter command...">
+                    </div>
+                </div>
+
+                <div class="emergency-panel">
+                    <div class="emergency-header">
+                        <h3>EMERGENCY RESPONSE</h3>
+                        <div class="emergency-status" id="emergencyStatus">STANDBY</div>
+                    </div>
+                    <div class="emergency-buttons">
+                        <button class="emergency-btn" data-type="ambulance">
+                            <span class="emergency-icon">🚑</span>
+                            <span>AMBULANCE</span>
+                        </button>
+                        <button class="emergency-btn" data-type="fire">
+                            <span class="emergency-icon">🚒</span>
+                            <span>FIRE TRUCK</span>
+                        </button>
+                        <button class="emergency-btn" data-type="police">
+                            <span class="emergency-icon">🚔</span>
+                            <span>POLICE</span>
+                        </button>
+                        <button class="emergency-btn" data-type="evacuation">
+                            <span class="emergency-icon">🚨</span>
+                            <span>EVACUATION</span>
+                        </button>
+                    </div>
+                    <div class="active-emergencies" id="activeEmergencies">
+                        <div class="no-emergencies">NO ACTIVE EMERGENCIES</div>
+                    </div>
+                </div>
+
+                <div class="performance-monitor">
+                    <div class="monitor-header">
+                        <h3>PERFORMANCE</h3>
+                        <div class="cpu-usage" id="cpuUsage">CPU: 0%</div>
+                    </div>
+                    <div class="performance-chart">
+                        <canvas id="performanceChart" width="280" height="120"></canvas>
+                    </div>
+                    <div class="performance-stats">
+                        <div class="perf-item">
+                            <span class="perf-label">MEMORY:</span>
+                            <span class="perf-value" id="memoryUsage">0 MB</span>
+                        </div>
+                        <div class="perf-item">
+                            <span class="perf-label">NETWORK:</span>
+                            <span class="perf-value" id="networkSpeed">0 KB/s</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-status">
+            <div class="status-section">
+                <span class="status-label">UPTIME:</span>
+                <span class="status-value" id="uptime">00:00:00</span>
+            </div>
+            <div class="status-section">
+                <span class="status-label">PROCESSED:</span>
+                <span class="status-value" id="processedCount">0</span>
+            </div>
+            <div class="status-section">
+                <span class="status-label">ACTIVE CONNECTIONS:</span>
+                <span class="status-value" id="connections">4</span>
+            </div>
+            <div class="status-section">
+                <span class="status-label">PREDICTION ACCURACY:</span>
+                <span class="status-value" id="accuracy">99.7%</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-animation"></div>
+            <div class="loading-text">INITIALIZING TRAFFIC CONTROL SYSTEMS...</div>
+            <div class="loading-progress">
+                <div class="loading-bar" id="loadingBar"></div>
+            </div>
+            <div class="loading-details" id="loadingDetails">Loading neural networks...</div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
